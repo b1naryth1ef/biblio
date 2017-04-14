@@ -1,0 +1,11 @@
+{
+  "name": "Biblio Test Project",
+  "path": "disco/",
+  "rules": [
+    "*.py"
+  ],
+  "output": {
+    "type": "markdown",
+    "path": "_build"
+  }
+}
