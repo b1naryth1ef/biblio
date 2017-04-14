@@ -19,7 +19,7 @@ TEMPLATE = """
 #### Attributes
 
 {% for attr in class['attributes'] %}
-`{{ attr['name'] }} = {{ attr['value'] }}`
+`{{ attr['name'] }}`
 {% endfor %}
 {% endif %}
 

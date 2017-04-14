@@ -14,8 +14,13 @@ biblio is fukin wip man
 - Parse docstrings
 - Cleanup AST flatten
   - Some edge cases here we so far just brush over
+- Better file pathing in config
+  - Allow multiple path sources
+  - Rules should allow for include/exclude
+  - all of this needs to respect module pathing
 - Proper config
 - Proper outputs
   - Markdown
   - HTML (themable? gitbook like?)
 - Allow for live outputing, inotify -> rebuild module
+- multiprocessing

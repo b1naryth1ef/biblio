@@ -13,9 +13,9 @@ def recursive_flatten_object(obj):
     result = {}
 
     for k, v in obj.__dict__.iteritems():
-        if isinstance(v, ast.AST) or isinstance(v, dict):
+        if isinstance(v, (ast.AST, dict)):
             v = recursive_flatten_object(v)
-        elif isinstance(v, list):
+        elif isinstance(v, list) and v and isinstance(v[0], (ast.AST, dict)):
             v = map(recursive_flatten_object, v)
         result[k] = v
 

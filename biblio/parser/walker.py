@@ -38,6 +38,7 @@ def flatten(module):
 
 
 def flatten_assign(assign):
+    # TODO: handle value
     for target in assign['targets']:
         yield {
             'name': flatten_name(target),
