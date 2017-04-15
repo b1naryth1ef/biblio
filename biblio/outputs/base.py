@@ -16,3 +16,9 @@ class BaseOutput(object):
 
     def output_module(self, name, module):
         return None
+
+    def begin(self):
+        pass
+
+    def complete(self):
+        pass

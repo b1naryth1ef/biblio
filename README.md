@@ -10,17 +10,10 @@ Unlike Sphinx, biblio does not run any of your code, only parse it. This results
 
 biblio is fukin wip man
 
-- Fix module pathing
-- Parse docstrings
-- Cleanup AST flatten
-  - Some edge cases here we so far just brush over
-- Better file pathing in config
-  - Allow multiple path sources
-  - Rules should allow for include/exclude
-  - all of this needs to respect module pathing
-- Proper config
-- Proper outputs
-  - Markdown
-  - HTML (themable? gitbook like?)
-- Allow for live outputing, inotify -> rebuild module
-- multiprocessing
+- Implement methdology for linking/parsing out types in data
+  - We need to somehow extract types and modify the parsed docstrings to include links
+- Proper HTML output
+  - Theme
+  - Search
+- Allow for live outputting w/ inotify
+- Multiprocessing

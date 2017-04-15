@@ -40,6 +40,8 @@ def main():
 
     modules = []
 
+    output.begin()
+
     for file_path in walk_path(path):
         module_path = file_path.replace(os.path.commonprefix([path, file_path]) + '/', '')
         module_name = module_path[:-3].replace('/', '.')
@@ -53,6 +55,8 @@ def main():
 
         print '[OUTPUT] {}'.format(module_name)
         output.output_module(module_name, module)
+
+    output.complete()
 
     if args.debug:
         with open(args.debug, 'w') as f:

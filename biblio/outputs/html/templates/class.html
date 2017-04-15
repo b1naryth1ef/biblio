@@ -3,6 +3,7 @@
   {% set docstring = class["docstring"] %}
   <p>{% include "docstring.html" %}</p>
 
+  {% if class["functions"] %}
   <{{ level|heading }}>Functions</{{ level|heading }}>
   {% set level = level + 1 %}
   {% for function in class["functions"] %}
@@ -11,4 +12,5 @@
     </div>
   {% endfor %}
   {% set level = level - 1 %}
+  {% endif %}
 {% endif %}
