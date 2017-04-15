@@ -15,5 +15,7 @@ biblio is fukin wip man
 - Proper HTML output
   - Theme
   - Search
+- Write docs
+  - Hightlight metaprogramming struggle
 - Allow for live outputting w/ inotify
 - Multiprocessing
