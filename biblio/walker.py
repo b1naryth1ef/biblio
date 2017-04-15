@@ -1,12 +1,11 @@
-import ast
+from __future__ import print_function
 
-"""
-This module needs to be refactored, ideally flatten takes a node and then recurses
-vs the current structure of flatten taking a module and operating weirdly, there
-is some duplicated code here. Ideally this is basically an ast walker, that we
-could even eventually (or when we rewrite) just plug into the walker, and remove
-the entire middle to_json step
-"""
+try:
+    from itertools import imap
+except:
+    imap = map
+
+import ast
 
 
 class Walker(ast.NodeVisitor):
@@ -20,8 +19,8 @@ class Walker(ast.NodeVisitor):
 
     def generic_visit(self, node):
         if not hasattr(self, 'visit_{}'.format(node.__class__.__name__)):
-            print 'WARNING: unvisited class: {}'.format(node)
-            print node.__dict__
+            print('WARNING: unvisited class: {}'.format(node))
+            print(node.__dict__)
         return super(Walker, self).generic_visit(node)
 
     def visit_Module(self, node):
@@ -34,7 +33,7 @@ class Walker(ast.NodeVisitor):
             'imports': [],
         }
 
-        for node in map(self.visit, node.body):
+        for node in imap(self.visit, node.body):
             if node['type'] == 'function':
                 obj['functions'].append(node)
             elif node['type'] == 'class':
@@ -53,12 +52,12 @@ class Walker(ast.NodeVisitor):
             'type': 'class',
             'name': node.name,
             'docstring': self.get_docstring(node),
-            'bases': map(self.visit, node.bases),
+            'bases': list(imap(self.visit, node.bases)),
             'attributes': [],
             'functions': [],
         }
 
-        for node in map(self.visit, node.body):
+        for node in imap(self.visit, node.body):
             if node['type'] == 'function':
                 obj['functions'].append(node)
             elif node['type'] == 'assign':
@@ -78,21 +77,21 @@ class Walker(ast.NodeVisitor):
     def visit_Assign(self, node):
         return {
             'type': 'assign',
-            'targets': map(self.visit, node.targets),
+            'targets': list(imap(self.visit, node.targets)),
             'value': self.visit(node.value)
         }
 
     def visit_Import(self, node):
         return {
             'type': 'import',
-            'names': map(self.visit, node.names)
+            'names': list(imap(self.visit, node.names))
         }
 
     def visit_ImportFrom(self, node):
         return {
             'type': 'import_from',
             'module': node.module,
-            'names': map(self.visit, node.names)
+            'names': list(imap(self.visit, node.names))
         }
 
     def visit_Name(self, node):
@@ -114,10 +113,11 @@ class Walker(ast.NodeVisitor):
         return {
             'type': 'call',
             'name': self.visit(node.func),
-            'starargs': node.starargs,
-            'kwargs': node.kwargs,
-            'keywords': map(self.visit, node.keywords),
-            'args': map(self.visit, node.args),
+            # TODO: py3
+            # 'starargs': node.starargs,
+            # 'kwargs': node.kwargs,
+            'keywords': list(imap(self.visit, node.keywords)),
+            'args': list(imap(self.visit, node.args)),
         }
 
     def visit_Str(self, node):
@@ -129,26 +129,26 @@ class Walker(ast.NodeVisitor):
     def visit_Dict(self, node):
         return {
             'type': 'dict',
-            'keys': map(self.visit, node.keys),
-            'values': map(self.visit, node.values),
+            'keys': list(imap(self.visit, node.keys)),
+            'values': list(imap(self.visit, node.values)),
         }
 
     def visit_Set(self, node):
         return {
             'type': 'set',
-            'elts': map(self.visit, node.elts),
+            'elts': list(imap(self.visit, node.elts)),
         }
 
     def visit_List(self, node):
         return {
             'type': 'list',
-            'elts': map(self.visit, node.elts),
+            'elts': list(imap(self.visit, node.elts)),
         }
 
     def visit_Tuple(self, node):
         return {
             'type': 'tuple',
-            'elts': map(self.visit, node.elts),
+            'elts': list(imap(self.visit, node.elts)),
         }
 
     def visit_Lambda(self, node):
@@ -156,6 +156,9 @@ class Walker(ast.NodeVisitor):
             'type': 'lambda',
             'args': self.visit(node.args),
         }
+
+    def visit_NameConstant(self, node):
+        return node.value
 
     def visit_keyword(self, node):
         return {
@@ -169,11 +172,14 @@ class Walker(ast.NodeVisitor):
 
     def visit_arguments(self, node):
         return {
-            'args': map(self.visit, node.args),
-            'defaults': map(self.visit, node.defaults),
+            'args': list(imap(self.visit, node.args)),
+            'defaults': list(imap(self.visit, node.defaults)),
             'kwargs': node.kwarg,
             'vargs': node.vararg,
         }
+
+    def visit_arg(self, node):
+        return node.arg
 
     def visit_Param(self, node):
         return {
@@ -223,4 +229,14 @@ class Walker(ast.NodeVisitor):
     def visit_Index(self, node):
         return {
             'type': 'index',
+        }
+
+    def visit_ExceptHandler(self, node):
+        return {
+            'type': 'except_handler',
+        }
+
+    def visit_Try(self, node):
+        return {
+            'type': 'try',
         }

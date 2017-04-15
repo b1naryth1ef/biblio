@@ -1,6 +1,9 @@
 import re
 
-from itertools import izip
+try:
+    from itertools import izip
+except ImportError:
+    izip = zip
 
 from biblio.parsers.base import BaseParser
 
@@ -32,10 +35,6 @@ SECTIONS = [
     'yield',
     'yields',
 ]
-
-
-def pairwise(iterable):
-    return izip(iterable[0::2], iterable[1::2])
 
 
 def nwise(iterable, n):

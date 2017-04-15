@@ -1,3 +1,5 @@
+from __future__ import print_function
+
 import os
 import ast
 import json
@@ -22,14 +24,14 @@ def main():
     # Determine and build output
     otyp = OUTPUTS.get(config['output'].pop('type'))
     if not otyp:
-        print 'ERROR: invalid output specified'
+        print('ERROR: invalid output specified')
         return
     output = otyp(config['output'])
 
     # Determine and build parser
     ptyp = PARSERS.get(config.get('parser', 'numpy'))
     if not ptyp:
-        print 'ERROR: invalid parser specified'
+        print('ERROR: invalid parser specified')
         return
     doc_parser = ptyp()
 
@@ -49,11 +51,11 @@ def main():
             continue
 
         with open(file_path, 'r') as f:
-            print '[WALK] {}'.format(module_name)
+            print('[WALK] {}'.format(module_name))
             module = Walker(doc_parser).visit(ast.parse(f.read()))
             modules.append(module)
 
-        print '[OUTPUT] {}'.format(module_name)
+        print('[OUTPUT] {}'.format(module_name))
         output.output_module(module_name, module)
 
     output.complete()
