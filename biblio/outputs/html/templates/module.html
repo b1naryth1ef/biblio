@@ -1,0 +1,13 @@
+<html>
+  <title>{{ name }}</title>
+</html>
+
+<body>
+  {% if module['docs'] %}
+    {{ module['docs'].replace("\n", "<br>") }}
+  {% endif %}
+
+  {% for class in module['classes'] %}
+    {% include "class.html" %}
+  {% endfor %}
+</body>

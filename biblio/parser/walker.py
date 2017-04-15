@@ -2,12 +2,58 @@ import ast
 
 from biblio.parser.util import recursive_flatten_object
 
+"""
+This module needs to be refactored, ideally flatten takes a node and then recurses
+vs the current structure of flatten taking a module and operating weirdly, there
+is some duplicated code here. Ideally this is basically an ast walker, that we
+could even eventually (or when we rewrite) just plug into the walker, and remove
+the entire middle to_json step
+"""
+
 
 def ast_to_dict(source_code):
     node = ast.parse(source_code)
     node_info = recursive_flatten_object(node)
     node_info['_type'] = node.__class__.__name__
     return node_info
+
+
+def flatten_generic(obj):
+    if obj['_type'] == 'Num':
+        return {
+            'type': 'number',
+            'value': obj['n'],
+        }
+    elif obj['_type'] == 'Name':
+        return obj['id']
+    elif obj['_type'] == 'Attribute':
+        return {
+            'type': 'attr',
+            'parent': flatten_generic(obj['value']),
+            'name': obj['attr'],
+        }
+    elif obj['_type'] == 'Call':
+        return {
+            'type': 'call',
+            'func': flatten_generic(obj['func']),
+            'keywords': [
+                {'name': kw['arg'], 'value': flatten_generic(kw['value'])}
+                for kw in obj['keywords']
+            ],
+        }
+    elif obj['_type'] == 'Str':
+        return {
+            'type': 'str',
+            'value': obj['s']
+        }
+    elif obj['_type'] in ('Set', 'List', 'Dict', 'Tuple', 'BinOp'):
+        # TODO figure out what metadata to dump for these
+        return {
+            'type': obj['_type'].lower(),
+        }
+
+    print 'generic: {}'.format(obj['_type'])
+    print obj
 
 
 def flatten(module):
@@ -42,8 +88,7 @@ def flatten_assign(assign):
     for target in assign['targets']:
         yield {
             'name': flatten_name(target),
-            'value': assign['value'],
-            '_node': assign,
+            'value': flatten_generic(assign['value']),
         }
 
 
@@ -52,7 +97,6 @@ def flatten_imp(imp):
         obj = {
             'name': name,
             'module': None,
-            '_node': imp,
         }
 
         if imp['_type'] == 'ImportFrom':

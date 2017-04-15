@@ -1,0 +1,8 @@
+<h1>{{ class["name"] }}</h1>
+{% if class["docs"] %}
+  <p>{{ class["docs"].replace("\n", "<br>") }}</p>
+
+  {% for function in class["functions"] %}
+    {% include "function.html" %}
+  {% endfor %}
+{% endif %}

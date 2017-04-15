@@ -3,10 +3,10 @@ import argparse
 
 from pprint import pprint
 
+from biblio.outputs import OUTPUTS
 from biblio.config import load_config, match_path
 from biblio.parser.util import walk_path
 from biblio.parser.walker import ast_to_dict, flatten
-from biblio.outputs.markdown import MarkdownOutput
 
 parser = argparse.ArgumentParser()
 parser.add_argument('config', help='Path to configuration file')
@@ -18,9 +18,12 @@ def main():
 
     config = load_config(args.config)
 
-    config['output'].pop('type')
-    output = MarkdownOutput(config['output'])
+    typ = OUTPUTS.get(config['output'].pop('type'))
+    if not typ:
+        print 'ERROR: invalid output specified'
+        return
 
+    output = typ(config['output'])
     path = os.path.join(os.path.dirname(args.config), config['path'])
 
     for file_path in walk_path(path):
@@ -34,10 +37,6 @@ def main():
             pprint(module)
 
         flat = flatten(module)
-
-        if args.debug:
-            pprint(flat)
-
         module_name = file_path[:-3].replace('/', '.')
         output.output_module(module_name, flat)
 

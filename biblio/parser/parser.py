@@ -1,1 +1,4 @@
 
+
+class NumpyParser(object):
+    pass
