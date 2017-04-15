@@ -1,16 +1,17 @@
 import os
+import ast
+import json
 import argparse
 
-from pprint import pprint
-
+from biblio.walker import Walker
 from biblio.outputs import OUTPUTS
+from biblio.parsers import PARSERS
 from biblio.config import load_config, match_path
-from biblio.parser.util import walk_path
-from biblio.parser.walker import ast_to_dict, flatten
+from biblio.util import walk_path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('config', help='Path to configuration file')
-parser.add_argument('--debug', help='Print raw AST', action='store_true')
+parser.add_argument('--debug', help='Print raw AST')
 
 
 def main():
@@ -18,27 +19,44 @@ def main():
 
     config = load_config(args.config)
 
-    typ = OUTPUTS.get(config['output'].pop('type'))
-    if not typ:
+    # Determine and build output
+    otyp = OUTPUTS.get(config['output'].pop('type'))
+    if not otyp:
         print 'ERROR: invalid output specified'
         return
+    output = otyp(config['output'])
 
-    output = typ(config['output'])
-    path = os.path.join(os.path.dirname(args.config), config['path'])
+    # Determine and build parser
+    ptyp = PARSERS.get(config.get('parser', 'numpy'))
+    if not ptyp:
+        print 'ERROR: invalid parser specified'
+        return
+    doc_parser = ptyp()
+
+    # Determine path to scan
+    path = os.path.dirname(args.config)
+    if 'path' in config:
+        path = os.path.join(path, config['path'])
+
+    modules = []
 
     for file_path in walk_path(path):
-        if not match_path(config, file_path):
+        module_path = file_path.replace(os.path.commonprefix([path, file_path]) + '/', '')
+        module_name = module_path[:-3].replace('/', '.')
+        if not match_path(config, module_path):
             continue
 
         with open(file_path, 'r') as f:
-            module = ast_to_dict(f.read())
+            print '[WALK] {}'.format(module_name)
+            module = Walker(doc_parser).visit(ast.parse(f.read()))
+            modules.append(module)
 
-        if args.debug:
-            pprint(module)
+        print '[OUTPUT] {}'.format(module_name)
+        output.output_module(module_name, module)
 
-        flat = flatten(module)
-        module_name = file_path[:-3].replace('/', '.')
-        output.output_module(module_name, flat)
+    if args.debug:
+        with open(args.debug, 'w') as f:
+            json.dump(modules, f, indent=2, sort_keys=True)
 
 
 if __name__ == '__main__':

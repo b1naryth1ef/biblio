@@ -11,10 +11,17 @@ class HTMLOutput(BaseOutput):
         default_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
         self.env = Environment(
             loader=FileSystemLoader(self.config.get('template_path', default_path)))
+        self.env.filters['heading'] = self.heading
 
         with open(os.path.join(self.path, 'index.html'), 'w') as f:
             f.write(self.env.get_template('index.html').render())
 
+    @staticmethod
+    def heading(level):
+        return 'h{}'.format(level)
+
     def output_module(self, name, module):
         with open(self.module_path(name, 'html'), 'w') as f:
-            f.write(self.env.get_template('module.html').render(module=module, name=name))
+            f.write(
+                self.env.get_template('module.html').render(
+                    module=module, name=name).encode('utf-8'))

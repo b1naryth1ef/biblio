@@ -1,8 +1,14 @@
-<h1>{{ class["name"] }}</h1>
-{% if class["docs"] %}
-  <p>{{ class["docs"].replace("\n", "<br>") }}</p>
+<{{ level|heading }}>{{ class["name"] }}</{{ level|heading }}>
+{% if class["docstring"] %}
+  {% set docstring = class["docstring"] %}
+  <p>{% include "docstring.html" %}</p>
 
+  <{{ level|heading }}>Functions</{{ level|heading }}>
+  {% set level = level + 1 %}
   {% for function in class["functions"] %}
+    <div class="push">
     {% include "function.html" %}
+    </div>
   {% endfor %}
+  {% set level = level - 1 %}
 {% endif %}

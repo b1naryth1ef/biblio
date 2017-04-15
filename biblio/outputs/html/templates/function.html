@@ -1,4 +1,26 @@
-<h2>{{ function['name'] }}</h2>
-{% if function['docs'] %}
-  <p>{{ function['docs'] }}</p>
+{% macro function_header(function) -%}
+{{ function['name'] }}(
+  {%- for arg in function['args']['args'] -%}
+    {%- if loop.index0 %}, {% endif -%}
+    {%- if function['args']['defaults']|length > loop.revindex -%}
+    {{ arg }}={{ function['args']['defaults'][loop.revindex] }}
+    {%- else -%}
+    {{ arg }}
+    {%- endif -%}
+  {%- endfor -%}
+  {%- if function['args']['vargs'] -%}
+    {%- if function['args']['args'] -%},{%- endif -%}
+    *{{ function['args']['vargs'] }}
+  {%- endif -%}
+  {%- if function['args']['kwargs'] -%}
+    {%- if function['args']['args'] or function['args']['vargs'] -%},{%- endif -%}
+    **{{ function['args']['kwargs'] }}
+  {%- endif -%}
+)
+{%- endmacro %}
+
+<{{ level|heading }}>{{ function_header(function) }}</{{ level|heading }}>
+{% if function['docstring'] %}
+  {% set docstring = function["docstring"] %}
+  <p>{% include "docstring.html" %}</p>
 {% endif %}

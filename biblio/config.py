@@ -9,10 +9,8 @@ def load_config(path):
 
 
 def match_path(config, path):
-    name = os.path.basename(path)
-
     for rule in config['rules']:
-        if not fnmatch.fnmatch(name, rule):
+        if not fnmatch.fnmatch(path, rule):
             return False
 
     return True

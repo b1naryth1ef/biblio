@@ -1,13 +1,39 @@
+{% set level = 1 %}
 <html>
   <title>{{ name }}</title>
+  <style>
+    .push {
+      margin-left: 20px;
+    }
+  </style>
 </html>
 
 <body>
-  {% if module['docs'] %}
-    {{ module['docs'].replace("\n", "<br>") }}
+  <h1>{{ name }}</h1>
+
+  {% if module['docstring'] %}
+    {% set docstring = module["docstring"] %}
+    <p>{% include "docstring.html" %}</p>
   {% endif %}
 
+  {% if module['variables'] %}
+  <h2>Constants</h2>
+  <div class="push">
+  {% for var in module['variables'] %}
+    {% for target in var['targets'] %}
+    {{ target }} = {{ var['value'] }}
+    {% endfor %}
+  {% endfor %}
+  </div>
+  {% endif %}
+
+  {% if module['classes'] %}
+  <h2>Classes</h2>
+  <div class="push">
+  {% set level = 3 %}
   {% for class in module['classes'] %}
     {% include "class.html" %}
   {% endfor %}
+  </div>
+  {% endif %}
 </body>

@@ -1,4 +1,0 @@
-
-
-class NumpyParser(object):
-    pass
