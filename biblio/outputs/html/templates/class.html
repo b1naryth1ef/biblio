@@ -1,3 +1,4 @@
+<div class="class-info", id="{{ class["name"] }}">
 <{{ level|heading }}>{{ class["name"] }}</{{ level|heading }}>
 {% if class["docstring"] %}
   {% set docstring = class["docstring"] %}
@@ -14,3 +15,4 @@
   {% set level = level - 1 %}
   {% endif %}
 {% endif %}
+</div>

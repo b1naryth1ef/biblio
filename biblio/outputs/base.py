@@ -4,6 +4,7 @@ import os
 class BaseOutput(object):
     def __init__(self, config):
         self.config = config
+        self.index = {}
 
         if 'path' in config:
             self.path = config['path']
@@ -17,8 +18,8 @@ class BaseOutput(object):
     def output_module(self, name, module):
         return None
 
-    def begin(self):
+    def begin(self, modules):
         pass
 
-    def complete(self):
+    def complete(self, modules):
         pass

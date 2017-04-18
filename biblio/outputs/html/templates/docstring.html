@@ -2,7 +2,7 @@
 {% set level = level + 1 %}
 {% if docstring['sections']['header'] %}
 {% for content in docstring['sections']['header'] %}
-  {{ content['content']|replace('\n', '<br>') }}
+  {{ content['content']|pdoc|replace('\n', '<br>') }}
 {% endfor %}
 {% endif %}
 
@@ -12,12 +12,12 @@
   {% if data[0]['name'] %}
   <ul>
   {% for entry in data %}
-  <li>{{ entry['name'] }} {% if entry['type'] %}({{ entry['type'] }}){% endif %} - {{ entry['content'] }}</li>
+  <li>{{ entry['name'] }} {% if entry['type'] %}({{ entry['type']|pdoc }}){% endif %} - {{ entry['content']|pdoc }}</li>
   {% endfor %}
   </ul>
   {% else %}
     {% for content in data %}
-    {{ content['content']|replace('\n', '<br>') }}
+    {{ content['content']|pdoc|replace('\n', '<br>') }}
     {% endfor %}
   {% endif %}
 {% endif %}

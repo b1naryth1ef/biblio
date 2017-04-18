@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import ast
 import json
+import time
 import argparse
 
 from biblio.walker import Walker
@@ -42,8 +43,8 @@ def main():
 
     modules = []
 
-    output.begin()
-
+    print('[WALK] --- START ---')
+    start = time.time()
     for file_path in walk_path(path):
         module_path = file_path.replace(os.path.commonprefix([path, file_path]) + '/', '')
         module_name = module_path[:-3].replace('/', '.')
@@ -53,12 +54,17 @@ def main():
         with open(file_path, 'r') as f:
             print('[WALK] {}'.format(module_name))
             module = Walker(doc_parser).visit(ast.parse(f.read()))
-            modules.append(module)
+            modules.append((module_name, module))
+    print('[WALK] --- END (%ss) ---' % (time.time() - start))
 
+    print('[OUTPUT] --- START ---')
+    start = time.time()
+    output.begin(modules)
+    for module_name, module in modules:
         print('[OUTPUT] {}'.format(module_name))
         output.output_module(module_name, module)
-
-    output.complete()
+    output.complete(modules)
+    print('[OUTPUT] --- END (%ss) ---' % (time.time() - start))
 
     if args.debug:
         with open(args.debug, 'w') as f:
