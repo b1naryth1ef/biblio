@@ -52,7 +52,7 @@ class Walker(ast.NodeVisitor):
             'type': 'class',
             'name': node.name,
             'docstring': self.get_docstring(node),
-            'bases': list(imap(self.visit, node.bases)),
+            'bases': [{'name': i.id} if isinstance(i, ast.Name) else self.visit(i) for i in node.bases],
             'attributes': [],
             'functions': [],
         }

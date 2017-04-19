@@ -3,7 +3,7 @@
   {%- for arg in function['args']['args'] -%}
     {%- if loop.index0 %}, {% endif -%}
     {%- if function['args']['defaults']|length > loop.revindex -%}
-    {{ arg }}={{ function['args']['defaults'][loop.revindex] }}
+    {{ arg }}={{ function['args']['defaults'][-loop.revindex] }}
     {%- else -%}
     {{ arg }}
     {%- endif -%}

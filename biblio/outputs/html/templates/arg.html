@@ -1,0 +1,5 @@
+{%- if arg['type'] == 'list' -%}
+{{ arg['elts'] }}
+{%- else -%}
+{{ arg }}
+{%- endif -%}

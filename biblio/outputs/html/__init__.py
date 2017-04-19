@@ -36,9 +36,8 @@ class HTMLOutput(BaseOutput):
             elif match in self.classes_full:
                 obj = self.classes_full[match]
             else:
-                print('[WARNING] unresolved reference `{}`'.format(match))
-                return match
-            return '<a href="/{}.html#{}">{}</a>'.format(
+                return '<code>{}</code>'.format(match)
+            return '<a href="/{}.html#{}"><code>{}</code></a>'.format(
                 obj[0].replace('.', '_'),
                 obj[1]['name'],
                 match
