@@ -3,6 +3,7 @@ from __future__ import print_function
 import os
 import re
 import sys
+import shutil
 
 from jinja2 import Environment, FileSystemLoader
 
@@ -48,7 +49,7 @@ class HTMLOutput(BaseOutput):
     def output_module(self, name, module):
         with open(self.module_path(name, 'html'), 'w') as f:
             template = self.env.get_template('module.html')
-            data = template.render(module=module, name=name)
+            data = template.render(module=module, name=name, config=self.config, modules=self.modules)
 
             if (sys.version_info > (3, 0)):
                 f.write(data)
@@ -69,9 +70,15 @@ class HTMLOutput(BaseOutput):
                 self.classes_full[full] = (name, cls)
 
     def begin(self, modules):
+        self.modules = modules
+
         for name, module in modules:
             self.process_module(name, module)
 
     def complete(self, modules):
         with open(os.path.join(self.path, 'index.html'), 'w') as f:
-            f.write(self.env.get_template('index.html').render(modules=modules))
+            f.write(self.env.get_template('index.html').render(modules=modules, config=self.config))
+
+        static_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static') + '/'
+        shutil.rmtree(os.path.join(self.path, 'static'))
+        shutil.copytree(static_path, os.path.join(self.path, 'static'))

@@ -1,10 +1,11 @@
-<body>
-  <h1> TEST </h1>
+{% extends "base.html" %}
+{% block body %}
+<h1>{{ config["title"] }}</h1>
 
-  <h2>Module Index</h2>
-  <ul>
-  {% for name, module in modules %}
-    <li><a href="/{{ name|replace('.', '_') }}.html">{{ name }}</a></li>
-  {% endfor %}
-  </ul>
-</body>
+<h2>Module Index</h2>
+<ul>
+{% for name, module in modules %}
+  <li><a href="/{{ name|replace('.', '_') }}.html">{{ name }}</a></li>
+{% endfor %}
+</ul>
+{% endblock %}

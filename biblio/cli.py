@@ -6,6 +6,8 @@ import json
 import time
 import argparse
 
+from biblio import Biblio
+from biblio.util import walk_path
 from biblio.walker import Walker
 from biblio.outputs import OUTPUTS
 from biblio.parsers import PARSERS
@@ -14,14 +16,18 @@ from biblio.util import walk_path
 
 parser = argparse.ArgumentParser()
 parser.add_argument('config', help='Path to configuration file')
-parser.add_argument('--debug', help='Print raw AST')
+parser.add_argument('--debug', action='store_true')
 
 
 def main():
     args = parser.parse_args()
-
     config = load_config(args.config)
+    path = os.path.dirname(args.config)
+    b = Biblio(path, config, debug=args.debug)
+    b.run()
 
+
+    '''
     # Determine and build output
     otyp = OUTPUTS.get(config['output'].pop('type'))
     if not otyp:
@@ -69,7 +75,7 @@ def main():
     if args.debug:
         with open(args.debug, 'w') as f:
             json.dump(modules, f, indent=2, sort_keys=True)
-
+    '''
 
 if __name__ == '__main__':
     main()

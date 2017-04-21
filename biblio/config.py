@@ -1,11 +1,10 @@
-import os
-import json
+import yaml
 import fnmatch
 
 
 def load_config(path):
     with open(path, 'r') as f:
-        return json.load(f)
+        return yaml.load(f)
 
 
 def match_path(config, path):

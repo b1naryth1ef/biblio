@@ -1,4 +1,3 @@
-<div class="push">
 {% set level = level + 1 %}
 {% if docstring['sections']['header'] %}
 {% for content in docstring['sections']['header'] %}
@@ -10,11 +9,12 @@
 {% if section != 'header' %}
 <{{ level|heading }}>{{ section|title }}</{{ level|heading }}>
   {% if data[0]['name'] %}
-  <ul>
+  <dl>
   {% for entry in data %}
-  <li>{{ entry['name'] }} {% if entry['type'] %}({{ entry['type']|pdoc }}){% endif %} - {{ entry['content']|pdoc }}</li>
+    <dt><code class="descname">{{ entry['name'] }} <em>{% if entry['type'] %}({{ entry['type']|pdoc }}){% endif %}</em></code></dt>
+    <dd>{{ entry['content']|pdoc }}</dd>
   {% endfor %}
-  </ul>
+  </dl>
   {% else %}
     {% for content in data %}
     {{ content['content']|pdoc|replace('\n', '<br>') }}
@@ -24,4 +24,3 @@
 {% endfor %}
 {% set level = level - 1 %}
 <!-- {{ docstring }} -->
-</div>
