@@ -2,3 +2,5 @@ _build/
 *.pyc
 .eggs/
 biblio.egg-info/
+build/
+dist/

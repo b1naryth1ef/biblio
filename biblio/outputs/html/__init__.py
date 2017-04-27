@@ -5,7 +5,7 @@ import re
 import sys
 import shutil
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 
 from ..base import BaseOutput
 
@@ -18,7 +18,7 @@ class HTMLOutput(BaseOutput):
         super(HTMLOutput, self).__init__(*args, **kwargs)
         default_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
         self.env = Environment(
-            loader=FileSystemLoader(self.config.get('template_path', default_path)))
+            loader=PackageLoader('biblio', 'outputs/html/templates/'))
         self.env.filters['heading'] = self.heading
         self.env.filters['pdoc'] = self.process_docstring
 

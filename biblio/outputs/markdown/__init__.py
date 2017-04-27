@@ -1,7 +1,7 @@
 import os
 import sys
 
-from jinja2 import Environment, FileSystemLoader
+from jinja2 import Environment, PackageLoader
 
 from ..base import BaseOutput
 
@@ -11,7 +11,7 @@ class MarkdownOutput(BaseOutput):
         super(MarkdownOutput, self).__init__(*args, **kwargs)
         default_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'templates')
         self.env = Environment(
-            loader=FileSystemLoader(self.config.get('template_path', default_path)))
+            loader=PackageLoader('biblio', 'outputs/markdown/templates/'))
         self.env.filters['clean'] = lambda s: s.replace('\n', ' ').replace('|', '&#124;').replace('`', '&#96;')
 
     def process_docstring(self, docstring):
