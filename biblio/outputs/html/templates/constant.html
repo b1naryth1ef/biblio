@@ -1,0 +1,20 @@
+<dt><code class="descname">
+{{ constant['targets'][0] }} =
+{% if constant['value']['type'] == 'call' %}
+{{ constant['value']['name'] }}(
+  {% if constant['value']['keywords'] %}
+  {% for kw in constant['value']['keywords'] %}
+  {{ kw['arg'] }} = {{ kw['value'] }},
+  {% endfor %}
+  {% elif constant['value']['args'] %}
+  {{ constant['value']['args']|join(', ') }}
+  {% endif %}
+  )
+{% else %}
+  {{ constant['value'] }}
+{% endif %}
+</code></dt>
+
+
+
+<!-- {{ constant }} -->

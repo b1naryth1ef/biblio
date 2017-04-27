@@ -1,25 +1,45 @@
 {% set level = level + 1 %}
 {% if docstring['sections']['header'] %}
 {% for content in docstring['sections']['header'] %}
-  {{ content['content']|pdoc|replace('\n', '<br>') }}
+{{ content['content']|pdoc|replace('\n', '<br>') }}
 {% endfor %}
 {% endif %}
 
 {% for section, data in docstring['sections'].items() %}
-{% if section != 'header' %}
-<{{ level|heading }}>{{ section|title }}</{{ level|heading }}>
-  {% if data[0]['name'] %}
-  <dl>
-  {% for entry in data %}
-    <dt><code class="descname">{{ entry['name'] }} <em>{% if entry['type'] %}({{ entry['type']|pdoc }}){% endif %}</em></code></dt>
-    <dd>{{ entry['content']|pdoc }}</dd>
-  {% endfor %}
-  </dl>
-  {% else %}
-    {% for content in data %}
-    {{ content['content']|pdoc|replace('\n', '<br>') }}
-    {% endfor %}
-  {% endif %}
+{% if function and section != 'header' and section != 'returns' %}
+<h4>{{ section|title }}</h4>
+<table border="1" class="docutils">
+	<thead valign="bottom">
+		<tr class="row-odd">
+			<th class="head">Name</th>
+			<th class="head">Type</th>
+			<th class="head">Description</th>
+		</tr>
+	</thead>
+	<tbody valign="top">
+		{% for entry in data %}
+		<tr class="row-even">
+      <td>{{ entry['name'] }}</td>
+      <td>{% if entry['type'] %}{{ entry['type']|pdoc }}{% endif %}</td>
+      <td>{{ entry['content']|pdoc }}</td>
+		</tr>
+		{% endfor %}
+	</tbody>
+</table>
+{% elif section != 'header' %}
+<h4>{{ section|title }}</h4>
+{% if data[0]['name'] %}
+<dl>
+	{% for entry in data %}
+	<dt><code class="descname">{{ entry['name'] }} <em>{% if entry['type'] %}({{ entry['type']|pdoc }}){% endif %}</em></code></dt>
+	<dd>{{ entry['content']|pdoc }}</dd>
+	{% endfor %}
+</dl>
+{% else %}
+{% for content in data %}
+{{ content['content']|pdoc|replace('\n', '<br>') }}
+{% endfor %}
+{% endif %}
 {% endif %}
 {% endfor %}
 {% set level = level - 1 %}

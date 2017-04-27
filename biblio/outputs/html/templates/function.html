@@ -1,5 +1,5 @@
 {% macro function_header(function) -%}
-{{ function['name'] }}(
+<dt><code class="descname">{{ function['name'] }}(
   {%- for arg in function['args']['args'] -%}
     {%- if loop.index0 %}, {% endif -%}
     {%- if function['args']['defaults']|length > loop.revindex -%}
@@ -16,11 +16,11 @@
     {%- if function['args']['args'] or function['args']['vargs'] -%},{%- endif -%}
     **{{ function['args']['kwargs'] }}
   {%- endif -%}
-)
+)</code></dt>
 {%- endmacro %}
 
-<{{ level|heading }}>{{ function_header(function) }}</{{ level|heading }}>
+{{ function_header(function) }}
 {% if function['docstring'] %}
   {% set docstring = function["docstring"] %}
-  <p>{% include "docstring.html" %}</p>
+  <dd>{% include "docstring.html" %}</dd>
 {% endif %}

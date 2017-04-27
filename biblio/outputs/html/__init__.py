@@ -77,7 +77,7 @@ class HTMLOutput(BaseOutput):
 
     def complete(self, modules):
         with open(os.path.join(self.path, 'index.html'), 'w') as f:
-            f.write(self.env.get_template('index.html').render(modules=modules, config=self.config))
+            f.write(self.env.get_template('index.html').render(modules=sorted(modules, key=lambda i: i[0]), config=self.config))
 
         static_path = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'static') + '/'
         shutil.rmtree(os.path.join(self.path, 'static'))

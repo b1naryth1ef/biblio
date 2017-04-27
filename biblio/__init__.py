@@ -71,5 +71,9 @@ class Biblio(object):
     def _process_file(self, file_path, doc_parser):
         self.log.debug('processing file %s', file_path)
         module_name = os.path.splitext(file_path)[0].replace('/', '.')
+
+        if module_name.endswith('__init__'):
+            module_name = module_name[:-9]
+
         with open(file_path, 'r') as f:
             return module_name, Walker(doc_parser).visit(ast.parse(f.read()))

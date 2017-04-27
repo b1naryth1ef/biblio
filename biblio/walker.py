@@ -1,9 +1,10 @@
 from __future__ import print_function
 
 try:
-    from itertools import imap
+    from itertools import imap, ifilter
 except:
     imap = map
+    ifilter = filter
 
 import ast
 
@@ -52,7 +53,9 @@ class Walker(ast.NodeVisitor):
             'type': 'class',
             'name': node.name,
             'docstring': self.get_docstring(node),
-            'bases': [{'name': i.id} if isinstance(i, ast.Name) else self.visit(i) for i in node.bases],
+            'bases': list(ifilter(lambda k: k.get('name') != 'object', [
+                {'name': i.id} if isinstance(i, ast.Name) else self.visit(i) for i in node.bases
+            ])),
             'attributes': [],
             'functions': [],
         }

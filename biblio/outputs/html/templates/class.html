@@ -1,10 +1,9 @@
 <div class="class-info", id="{{ class["name"] }}">
 <!-- {{ class }} -->
 <{{ level|heading }}>{{ class["name"] }}</{{ level|heading }}>
-    <p><i>Inherits From {% for base in class["bases"] if base['name'] != 'object' -%}
-        {{ base['name'] }}
-        {%- if not loop.last -%},{% endif %}
-    {%- endfor -%}</i></p>
+    <p><i>Inherits From <code>{% for base in class["bases"] if base['name'] != 'object' -%}
+        {{ base['name'] }}{% if not loop.last -%}, {% endif %}
+    {%- endfor -%}</code></i></p>
 
   {% if class["docstring"] %}
   {% set docstring = class["docstring"] %}
@@ -13,10 +12,10 @@
 
   {% if class["functions"] %}
   <{{ level|heading }}>Functions</{{ level|heading }}>
-  {% set level = level + 1 %}
+  <dl>
   {% for function in class["functions"] %}
     {% include "function.html" %}
   {% endfor %}
-  {% set level = level - 1 %}
+  </dl>
   {% endif %}
 </div>

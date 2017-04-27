@@ -10,10 +10,8 @@
 
   {% if module['variables'] %}
   <h2>Constants</h2>
-  {% for var in module['variables'] %}
-    {% for target in var['targets'] %}
-    {{ target }} = {{ var['value'] }}
-    {% endfor %}
+  {% for constant in module['variables'] %}
+    {% include 'constant.html' %}
   {% endfor %}
   {% endif %}
 
