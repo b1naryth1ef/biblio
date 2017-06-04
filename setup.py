@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-from biblio import VERSION
+VERSION = '0.0.3'
 
 
 def run_tests():
