@@ -1,6 +1,6 @@
 {%- if docstring['sections']['header'] -%}
 {%- for content in docstring['sections']['header'] -%}
-{{ content['content'] }}
+{{ content['content']|pdoc }}
 {%- endfor -%}
 {%- endif -%}
 
